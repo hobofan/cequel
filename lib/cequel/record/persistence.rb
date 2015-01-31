@@ -121,7 +121,7 @@ module Cequel
       #
       def load
         assert_keys_present!
-        record_collection.load! unless loaded?
+        record_collection.load unless loaded?
         self
       end
 

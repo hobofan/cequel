@@ -48,6 +48,24 @@ module Cequel
       end
 
       #
+      # Hydrate all the records in this collection from a database query,
+      # omitting the ones that could not be loaded
+      #
+      # @return [LazyRecordCollection] self
+      def load
+        records_by_identity = index_by { |record| record.key_values }
+
+        record_set.find_each_row do |row|
+          identity = row.values_at(*record_set.key_column_names)
+          records_by_identity[identity].hydrate(row)
+        end
+
+        delete_if { |record| !record.loaded? }
+
+        self
+      end
+
+      #
       # Hydrate all the records in this collection from a database query
       #
       # @return [LazyRecordCollection] self
