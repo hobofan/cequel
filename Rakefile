@@ -11,7 +11,7 @@ task :default => :release
 task :release => [
   :verify_changelog,
   :rubocop,
-  :wwtd,
+  :"test:all",
   :build,
   :tag,
   :update_stable,
@@ -67,6 +67,10 @@ namespace :test do
     t.rspec_opts = '--fail-fast --format=progress'
     t.fail_on_error = true
   end
+
+  task :all do
+    abort unless system('bundle', 'exec', 'wwtd', '--parallel')
+  end
 end
 
 desc 'Update changelog'
@@ -89,5 +93,18 @@ task :verify_changelog do
 
   if File.read('./CHANGELOG.md').each_line.first.strip != "## #{Cequel::VERSION}"
     abort "Changelog is not up-to-date."
+  end
+end
+
+namespace :cassandra do
+  namespace :versions do
+    desc 'Update list of available Cassandra versions'
+    task :update do
+      listing = Net::HTTP.get(URI.parse("http://archive.apache.org/dist/cassandra/"))
+      versions = listing.scan(%r(href="(\d+\.\d+\.\d+)/")).map(&:first)
+      File.open(File.expand_path('../.cassandra-versions', __FILE__), 'w') do |f|
+        f.puts(versions.sort_by(&Gem::Version.method(:new)).join("\n"))
+      end
+    end
   end
 end

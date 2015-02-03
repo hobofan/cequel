@@ -564,6 +564,15 @@ Cequel was written by:
 * Kei Kusakari
 * Oleh Novosad
 * John Smart
+* Angelo Lakra
+* Olivier Lance
+* Tomohiro Nishimura
+* Masaki Takahashi
+* G Gordon Worley III
+* Clark Bremer
+* Tamara Temple
+* Long On
+* Lucas Mundim
 
 Special thanks to [Brewster](https://www.brewster.com), which supported the 0.x
 releases of Cequel.
